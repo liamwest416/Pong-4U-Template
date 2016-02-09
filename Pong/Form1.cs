@@ -142,20 +142,26 @@ namespace Pong
             newGameOk = true;
             SetParameters();
 
-            // TODO create code to make a graphics object, a brush, and a font to display the countdown
+            // DONE create code to make a graphics object, a brush, and a font to display the countdown
+            Graphics formGraphics = this.CreateGraphics();
+            SolidBrush countdownBrush = new SolidBrush(Color.White);
+            Font drawFont = new Font("Courier New", 82, FontStyle.Regular);
 
             startLabel.Visible = false;
             Refresh();
             
             //countdown to start of game
-            for (; ; ) // TODO create conditions for a for loop that counts down from 3 
+            for (int i = 3; i  > 0; i--) // DONE create conditions for a for loop that counts down from 3 
             {
-                // --- create code using DrawString to display the countdown in the appropriate area.  
-                // --- sleep for 1 second
-                // --- refresh the screen
+                // DONE create code using DrawString to display the countdown in the appropriate area. 
+                formGraphics.DrawString(i.ToString(), drawFont, countdownBrush, this.Width / 2 - 40, this.Height / 2 - 40);
+                // DONE sleep for 1 second
+                Thread.Sleep(1000);
+                // DONE refresh the screen
+                this.Refresh();
             }
-            
-            // TODO start the gameUpdateLoop timer
+
+            gameUpdateLoop.Start();
             newGameOk = false;
         }
 
@@ -179,9 +185,10 @@ namespace Pong
 
             }
 
-            // TODO set starting X position for ball to middle of screen, (use this.Width and BALL_SIZE)
-            // TODO set starting Y position for ball to middle of screen, (use this.Height and BALL_SIZE)
-
+            // DONE set starting X position for ball to middle of screen, (use this.Width and BALL_SIZE)
+            // DONE set starting Y position for ball to middle of screen, (use this.Height and BALL_SIZE)
+            ballX = (this.Width - BALL_SIZE) / 2;
+            ballY = (this.Height - BALL_SIZE) / 2;
         }
 
         /// <summary>
@@ -196,36 +203,70 @@ namespace Pong
 
             #region update ball position
 
-            // TODO create code to move ball either left or right based on ballMoveRight and BALL_SPEED
-
-            // TODO create code move ball either down or up based on ballMoveDown and BALL_SPEED
+            // DONE create code to move ball either left or right based on ballMoveRight and BALL_SPEED
+            if (ballMoveRight)
+            {
+                ballX += BALL_SPEED;
+            }
+            else
+            {
+                ballX -= BALL_SPEED;
+            }
+            // DONE create code move ball either down or up based on ballMoveDown and BALL_SPEED
+            if (ballMoveDown)
+            {
+                ballY += BALL_SPEED;
+            }
+            else
+            {
+                ballY -= BALL_SPEED;
+            }
 
             #endregion
 
             #region update paddle positions
 
-            if (aKeyDown == true && paddle1Y > 0)
+            if (aKeyDown == true && paddle1Y >= 0)
             {
-                // TODO create code to move player 1 paddle up using paddle1Y and PADDLE_SPEED
+                // DONE create code to move player 1 paddle up using paddle1Y and PADDLE_SPEED
+                paddle1Y -= PADDLE_SPEED;
             }
 
-            // TODO create an if statement and code to move player 1 paddle down using paddle1Y and PADDLE_SPEED
+            // DONE create an if statement and code to move player 1 paddle down using paddle1Y and PADDLE_SPEED
+            if (zKeyDown == true && paddle1Y <= this.Height - PADDLE_LENGTH)
+            {
+                paddle1Y += PADDLE_SPEED;
+            }
 
-            // TODO create an if statement and code to move player 2 paddle up using paddle2Y and PADDLE_SPEED
+            // DONE create an if statement and code to move player 2 paddle up using paddle2Y and PADDLE_SPEED
+            if (mKeyDown == true && paddle2Y > 0)
+            {
+                paddle2Y += PADDLE_SPEED;
+            }
 
-            // TODO create an if statement and code to move player 2 paddle down using paddle2Y and PADDLE_SPEED
-
+            // DONE create an if statement and code to move player 2 paddle down using paddle2Y and PADDLE_SPEED
+            if (jKeyDown == true && paddle2Y <= this.Height - PADDLE_LENGTH)
+            {
+                paddle2Y -= PADDLE_SPEED;
+            }
             #endregion
 
             #region ball collision with top and bottom lines
 
             if (ballY < 0) // if ball hits top line
             {
-                // TODO use ballMoveDown boolean to change direction
-                // TODO play a collision sound
+                // DONE use ballMoveDown boolean to change direction
+                ballMoveDown = true;
+                // DONE play a collision sound
+                player.Play();
             }
-            // TODO In an else if statement use ballY, this.Height, and BALL_SIZE to check for collision with bottom line
+            // DONE In an else if statement use ballY, this.Height, and BALL_SIZE to check for collision with bottom line
             // If true use ballMoveDown down boolean to change direction
+            else if (ballY > this.Height - BALL_SIZE)
+            {
+                ballMoveDown = false;
+                player.Play();
+            }
 
             #endregion
 
@@ -233,13 +274,18 @@ namespace Pong
 
             if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_LENGTH && ballX < PADDLE_EDGE + PADDLE_WIDTH) // left paddle collision
             {
-                // TODO play a "paddle hit" sound 
-                // TODO use ballMoveRight boolean to change direction
+                // DONE play a "paddle hit" sound 
+                player.Play();
+                // DONE use ballMoveRight boolean to change direction
+                ballMoveRight = true;
+
             }
             else if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_LENGTH && ballX + BALL_SIZE > this.Width - PADDLE_EDGE - PADDLE_WIDTH / 2) // right paddle collision
             {
-                // TODO play a "paddle hit" sound 
-                // TODO use ballMoveRight boolean to change direction
+                // DONE play a "paddle hit" sound 
+                player.Play();
+                // DONE use ballMoveRight boolean to change direction
+                ballMoveRight = false;
             }
 
             #endregion
@@ -248,15 +294,24 @@ namespace Pong
 
             player = new SoundPlayer(Properties.Resources.score);
 
-            if (ballX < 0)  // TODO ball hits left wall logic
+            if (ballX < 0)  // DONE ball hits left wall logic
             {
                 // --- play score sound
+
                 // --- update player 2 score
+                player2Score ++;
                 // --- update player2Label with new score
+                player2Label.Text = "Player 2:" + player2Score ;
                 // --- refresh
+                SetParameters();
+
 
                 // --- use if statement to check to see if player 2 has won the game. If true run 
                 // gameWinScore method. Else call SetParameters method to reset ball position.
+                if (player2Score == gameWinScore)
+                {
+                    
+                }
 
             }
 
@@ -292,11 +347,12 @@ namespace Pong
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            // TODO draw paddles using FillRectangle
+          
+            e.Graphics.FillRectangle(drawBrush, PADDLE_EDGE, paddle1Y, PADDLE_WIDTH, PADDLE_LENGTH);
+            e.Graphics.FillRectangle(drawBrush, this.Width - PADDLE_WIDTH - PADDLE_EDGE, paddle2Y, PADDLE_WIDTH, PADDLE_LENGTH);
 
-
-            // TODO draw ball using FillRectangle
-
+          
+            e.Graphics.FillRectangle(drawBrush, ballX, ballY, BALL_SIZE, BALL_SIZE);
         }
 
     }
