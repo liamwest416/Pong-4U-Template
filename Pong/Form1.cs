@@ -308,7 +308,7 @@ namespace Pong
 
                 // --- use if statement to check to see if player 2 has won the game. If true run 
                 // gameWinScore method. Else call SetParameters method to reset ball position.
-                if (player2Score == gameWinScore)
+                if (player2Score == gameWinScore) 
                 {
                     
                 }
