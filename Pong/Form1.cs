@@ -139,6 +139,17 @@ namespace Pong
         /// </summary>
         private void GameStart()
         {
+
+
+            // Ball color changed
+            //if (newGameOk == true)
+            //{
+            //    drawBrush.Color = Color.Black;
+            //}
+            //else if (newGameOk == false)
+            //{
+            //    drawBrush.Color = Color.White;
+            //}
             newGameOk = true;
             SetParameters();
 
@@ -301,7 +312,7 @@ namespace Pong
                 // --- update player 2 score
                 player2Score ++;
                 // --- update player2Label with new score
-                player2Label.Text = "Player 2:" + player2Score ;
+                player2Label.Text = "Player 2:   " + player2Score ;
                 // --- refresh
                 SetParameters();
 
@@ -310,15 +321,51 @@ namespace Pong
                 // gameWinScore method. Else call SetParameters method to reset ball position.
                 if (player2Score == gameWinScore) 
                 {
-                    
+                    player1Score = 0;
+                    player2Score = 0;
+                    player2Label.Text = "Player 2:   " + player2Score;
+                    player1Label.Text = "Player 1:   " + player1Score;
+                    startLabel.Visible = true;
+                    startLabel.Text = "Player 2 Wins!";
+                    Refresh();
+                    gameUpdateLoop.Enabled = false;
+                    Thread.Sleep(2000);
+                    gameUpdateLoop.Enabled = true;
+                    startLabel.Visible = false;
+                   
+
                 }
 
             }
 
             // TODO same as above but this time check for collision with the right wall
+            if (ballX >= this.Width)
+            {
+                player1Score++;
+                // --- update player1Label with new score
+                player1Label.Text = "Player 1:   " + player1Score;
+                // --- refresh
+                SetParameters();
 
+                if (player1Score >= gameWinScore)
+                {
+                    player1Score = 0;
+                    player2Score = 0;
+                    player2Label.Text = "Player 2:   " + player2Score;
+                    player1Label.Text = "Player 1:   " + player1Score;
+                    startLabel.Visible = true;
+                    startLabel.Text = "Player 1 Wins!";
+                    Refresh();
+                    gameUpdateLoop.Enabled = false;
+                    Thread.Sleep(2000);
+                    gameUpdateLoop.Enabled = true;
+                    startLabel.Visible = false;
+  
+
+                }
+            }
             #endregion
-            
+
             //refresh the screen, which causes the Form1_Paint method to run
             this.Refresh();
         }
@@ -351,8 +398,14 @@ namespace Pong
             e.Graphics.FillRectangle(drawBrush, PADDLE_EDGE, paddle1Y, PADDLE_WIDTH, PADDLE_LENGTH);
             e.Graphics.FillRectangle(drawBrush, this.Width - PADDLE_WIDTH - PADDLE_EDGE, paddle2Y, PADDLE_WIDTH, PADDLE_LENGTH);
 
-          
-            e.Graphics.FillRectangle(drawBrush, ballX, ballY, BALL_SIZE, BALL_SIZE);
+
+            // Ball color changed
+            if (newGameOk == false)
+            {
+                e.Graphics.FillRectangle(drawBrush, ballX, ballY, BALL_SIZE, BALL_SIZE);
+            }
+
+            
         }
 
     }
